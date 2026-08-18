@@ -1,8 +1,16 @@
-# Focus Pace
+<p align="center">
+  <img src="src/FocusPace/Assets/FocusPace.ico" width="104" alt="Focus Pace brand icon" />
+</p>
 
-**Focus Pace measures progress, not pressure.**
+<h1 align="center">Focus Pace</h1>
+
+<p align="center"><strong>Focus Pace measures progress, not pressure.</strong></p>
 
 Focus Pace 是一个极简、低打扰的 Windows 专注节奏工具。它用正向累计展示已经完成的专注或休息时间，不使用制造压力的倒计时。代码、可执行文件和配置目录继续使用兼容名称 `FocusPace`。
+
+<p align="center">
+  <img src="screenshots/focus%20pace.png" width="460" alt="Focus Pace main window" />
+</p>
 
 ## v0.1.0 功能
 
