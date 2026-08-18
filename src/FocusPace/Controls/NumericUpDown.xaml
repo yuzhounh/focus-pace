@@ -1,0 +1,16 @@
+<UserControl x:Class="FocusPace.Controls.NumericUpDown"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Root" Height="50" Focusable="False"
+             PreviewMouseLeftButtonDown="Root_OnPreviewMouseLeftButtonDown">
+    <Border CornerRadius="10" Background="{DynamicResource SurfaceBrush}" BorderThickness="0" Cursor="IBeam">
+        <TextBox x:Name="ValueEditor" Text="{Binding Value, ElementName=Root, Mode=OneWay}"
+                 MaxLength="3" Margin="10,2" Padding="0" BorderThickness="0" Background="Transparent"
+                 Foreground="{DynamicResource TextPrimaryBrush}" FontSize="22" FontWeight="Normal"
+                 TextAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"
+                 PreviewTextInput="ValueEditor_OnPreviewTextInput"
+                 PreviewKeyDown="ValueEditor_OnPreviewKeyDown"
+                 GotKeyboardFocus="ValueEditor_OnGotKeyboardFocus"
+                 LostKeyboardFocus="ValueEditor_OnLostKeyboardFocus" />
+    </Border>
+</UserControl>

@@ -1,0 +1,62 @@
+<Window x:Class="FocusPace.Views.RestOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Focus Pace Rest"
+        WindowStyle="None" ResizeMode="NoResize"
+        WindowStartupLocation="Manual"
+        ShowInTaskbar="False" Topmost="True"
+        Background="Black"
+        FontFamily="Segoe UI Variable Text, Segoe UI">
+    <Grid>
+        <Image x:Name="WallpaperImage" Stretch="UniformToFill" />
+        <Border x:Name="ActionPanel" Width="420" Padding="30,26" CornerRadius="18"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Background="{DynamicResource ElevatedSurfaceBrush}"
+                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="30" ShadowDepth="8" Opacity="0.32" />
+            </Border.Effect>
+            <StackPanel>
+                <TextBlock Text="Time to rest" FontSize="28" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextPrimaryBrush}" HorizontalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" Margin="0,18,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                    <TextBlock Text="{Binding TimeText}" FontSize="38" FontWeight="Normal"
+                               FontFamily="Segoe UI Variable Display, Segoe UI"
+                               Foreground="{DynamicResource TextPrimaryBrush}" />
+                    <TextBlock Text=" / " Margin="7,0" FontSize="15" VerticalAlignment="Bottom"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <TextBlock Text="{Binding TargetText}" FontSize="15" VerticalAlignment="Bottom" Margin="0,0,0,5"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                </StackPanel>
+                <ProgressBar Height="7" Margin="0,12,0,0" Minimum="0" Maximum="1"
+                             Value="{Binding Progress, Mode=OneWay}" Foreground="{Binding ProgressFillBrush}"
+                             Background="{DynamicResource InputSurfaceBrush}" BorderThickness="0" />
+                <Grid Margin="0,20,0,0">
+                    <StackPanel x:Name="RestActionsPanel">
+                        <TextBlock Text="Step away for a moment and let yourself recover."
+                                   Margin="0,0,0,20" TextWrapping="Wrap" TextAlignment="Center" FontSize="14"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                        <Button Content="Extend Focus by 3 minutes" Style="{StaticResource PrimaryButtonStyle}"
+                                Click="ExtendFocusButton_OnClick" />
+                        <Button Content="Leave full screen" Style="{StaticResource SecondaryButtonStyle}"
+                                Margin="0,8,0,0" Click="LeaveFullScreenButton_OnClick" />
+                    </StackPanel>
+                    <Border x:Name="LeaveConfirmationPanel" Visibility="Collapsed"
+                            Background="{DynamicResource InputSurfaceBrush}" CornerRadius="12" Padding="18">
+                        <StackPanel>
+                            <TextBlock Text="Leave the rest screen?" FontSize="16" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}" HorizontalAlignment="Center" />
+                            <TextBlock Text="Please avoid working too long without a break."
+                                       Margin="0,8,0,15" TextWrapping="Wrap" TextAlignment="Center" FontSize="13"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <Button Content="Keep resting" Style="{StaticResource PrimaryButtonStyle}"
+                                    Click="CancelLeaveButton_OnClick" />
+                            <Button Content="Leave full screen" Style="{StaticResource SecondaryButtonStyle}"
+                                    Margin="0,6,0,0" Click="ConfirmLeaveButton_OnClick" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

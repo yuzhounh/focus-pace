@@ -1,0 +1,142 @@
+<Window x:Class="FocusPace.Views.WidgetWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:infra="clr-namespace:FocusPace.Infrastructure"
+        xmlns:controls="clr-namespace:FocusPace.Controls"
+        xmlns:models="clr-namespace:FocusPace.Models"
+        Title="Focus Pace Widget"
+        Width="176" Height="46" SizeToContent="Manual"
+        WindowStyle="None" ResizeMode="NoResize"
+        AllowsTransparency="True" Background="Transparent"
+        Topmost="{Binding WidgetAlwaysOnTop}" ShowInTaskbar="False" ShowActivated="False"
+        FontFamily="Segoe UI Variable Text, Segoe UI">
+    <Window.Resources>
+        <infra:ProgressWidthConverter x:Key="ProgressWidthConverter" />
+        <ContextMenu x:Key="WidgetMenu" StaysOpen="False"
+                     DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Open Focus Pace" Command="{Binding ShowSettingsCommand}" />
+            <Separator />
+            <MenuItem Header="Start with Windows" IsCheckable="True"
+                      IsChecked="{Binding StartWithWindows, Mode=TwoWay}" />
+            <MenuItem Header="Always on top" IsCheckable="True"
+                      IsChecked="{Binding WidgetAlwaysOnTop, Mode=TwoWay}" />
+            <MenuItem Header="Widget style">
+                <MenuItem Header="Bar" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsBarWidget, Mode=OneWay}"
+                          Command="{Binding SelectWidgetStyleCommand}" CommandParameter="{x:Static models:WidgetStyleKind.Bar}" />
+                <MenuItem Header="Ring" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsRingWidget, Mode=OneWay}"
+                          Command="{Binding SelectWidgetStyleCommand}" CommandParameter="{x:Static models:WidgetStyleKind.Ring}" />
+                <MenuItem Header="Fluid" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsFluidWidget, Mode=OneWay}"
+                          Command="{Binding SelectWidgetStyleCommand}" CommandParameter="{x:Static models:WidgetStyleKind.Fluid}" />
+            </MenuItem>
+            <MenuItem Header="Widget motion">
+                <MenuItem Header="Dynamic" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True"
+                          IsChecked="{Binding IsWidgetAnimated, Mode=OneWay}"
+                          Command="{Binding SelectWidgetMotionCommand}" CommandParameter="{x:Static models:WidgetMotionKind.Dynamic}" />
+                <MenuItem Header="Static" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True"
+                          IsChecked="{Binding IsStaticWidget, Mode=OneWay}"
+                          Command="{Binding SelectWidgetMotionCommand}" CommandParameter="{x:Static models:WidgetMotionKind.Static}" />
+            </MenuItem>
+            <MenuItem Header="Widget opacity">
+                <MenuItem Header="100%" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsWidgetOpacity100, Mode=OneWay}"
+                          Command="{Binding SelectWidgetOpacityCommand}" CommandParameter="{x:Static models:WidgetOpacityKind.Opacity100}" />
+                <MenuItem Header="90%" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsWidgetOpacity90, Mode=OneWay}"
+                          Command="{Binding SelectWidgetOpacityCommand}" CommandParameter="{x:Static models:WidgetOpacityKind.Opacity90}" />
+                <MenuItem Header="80%" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsWidgetOpacity80, Mode=OneWay}"
+                          Command="{Binding SelectWidgetOpacityCommand}" CommandParameter="{x:Static models:WidgetOpacityKind.Opacity80}" />
+                <MenuItem Header="70%" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsWidgetOpacity70, Mode=OneWay}"
+                          Command="{Binding SelectWidgetOpacityCommand}" CommandParameter="{x:Static models:WidgetOpacityKind.Opacity70}" />
+                <MenuItem Header="60%" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsWidgetOpacity60, Mode=OneWay}"
+                          Command="{Binding SelectWidgetOpacityCommand}" CommandParameter="{x:Static models:WidgetOpacityKind.Opacity60}" />
+            </MenuItem>
+            <MenuItem Header="Color">
+                <MenuItem Header="Brand" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsBrandTheme, Mode=OneWay}"
+                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Brand}" />
+                <MenuItem Header="Ocean" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsOceanTheme, Mode=OneWay}"
+                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Ocean}" />
+                <MenuItem Header="Violet" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsVioletTheme, Mode=OneWay}"
+                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Violet}" />
+                <MenuItem Header="Mint" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsMintTheme, Mode=OneWay}"
+                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Mint}" />
+                <MenuItem Header="Amber" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsAmberTheme, Mode=OneWay}"
+                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Amber}" />
+                <MenuItem Header="Rose" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsRoseTheme, Mode=OneWay}"
+                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Rose}" />
+                <MenuItem Header="Silver" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsSilverTheme, Mode=OneWay}"
+                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Silver}" />
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="{Binding PauseResumeText}" Command="{Binding PauseResumeCommand}" />
+            <MenuItem Header="Restart session" Command="{Binding RestartCommand}" />
+            <MenuItem Header="Start Focus" Command="{Binding StartFocusCommand}" />
+            <MenuItem Header="Start Rest" Command="{Binding StartRestCommand}" />
+            <Separator />
+            <MenuItem Header="Hide widget" Command="{Binding HideWidgetCommand}" />
+            <Separator />
+            <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
+        </ContextMenu>
+    </Window.Resources>
+
+    <Grid x:Name="Pill" Opacity="{Binding WidgetOpacity}" ContextMenu="{StaticResource WidgetMenu}"
+          MouseEnter="Pill_OnMouseEnter" MouseLeave="Pill_OnMouseLeave"
+          MouseLeftButtonDown="Pill_OnMouseLeftButtonDown"
+          MouseMove="Pill_OnMouseMove"
+          MouseLeftButtonUp="Pill_OnMouseLeftButtonUp">
+        <Border x:Name="BarPill" Visibility="{Binding IsBarWidget, Converter={StaticResource BooleanToVisibilityConverter}}"
+                CornerRadius="14" Background="{DynamicResource WidgetSurfaceBrush}"
+                BorderBrush="{DynamicResource InputSurfaceBrush}" BorderThickness="2" ClipToBounds="True">
+            <Grid x:Name="BarTextLayer">
+            <controls:AnimatedBarProgressControl Progress="{Binding Progress, Mode=OneWay}"
+                                                  ProgressBrush="{Binding ProgressFillBrush}"
+                                                  IsAnimated="{Binding IsWidgetAnimated}" />
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding WidgetPhaseLabel}" Foreground="{DynamicResource WidgetTextBrush}" FontSize="13"
+                               FontWeight="Normal" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding TimeText}" Foreground="{DynamicResource WidgetTextBrush}" FontSize="21"
+                               FontWeight="Normal" VerticalAlignment="Center" Margin="9,0,0,0" />
+                </StackPanel>
+                <Grid HorizontalAlignment="Left" ClipToBounds="True">
+                    <Grid.Width>
+                        <MultiBinding Converter="{StaticResource ProgressWidthConverter}">
+                            <Binding ElementName="BarTextLayer" Path="ActualWidth" />
+                            <Binding Path="Progress" />
+                        </MultiBinding>
+                    </Grid.Width>
+                    <Grid Width="{Binding ActualWidth, ElementName=BarTextLayer}" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding WidgetPhaseLabel}" Foreground="{Binding ProgressTextBrush}" FontSize="13"
+                                       FontWeight="Normal" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding TimeText}" Foreground="{Binding ProgressTextBrush}" FontSize="21"
+                                       FontWeight="Normal" VerticalAlignment="Center" Margin="9,0,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+            </Grid>
+        </Border>
+
+        <Grid Visibility="{Binding IsRingWidget, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Ellipse Fill="{DynamicResource WidgetSurfaceBrush}" Stroke="{DynamicResource BorderBrush}" StrokeThickness="1" />
+            <controls:CircularProgressControl Margin="7" Progress="{Binding Progress, Mode=OneWay}"
+                                              ProgressBrush="{Binding ProgressFillBrush}"
+                                              TrackBrush="{DynamicResource InputSurfaceBrush}" StrokeThickness="8"
+                                              IsAnimated="{Binding IsWidgetAnimated}" />
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding WidgetPhaseLabel}" Foreground="{DynamicResource WidgetTextBrush}" FontSize="13" FontWeight="Normal" HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding TimeText}" Foreground="{DynamicResource WidgetTextBrush}" FontSize="21" FontWeight="Normal" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Visibility="{Binding IsFluidWidget, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <controls:FluidProgressControl Progress="{Binding Progress, Mode=OneWay}"
+                                           ProgressBrush="{Binding ProgressFillBrush}"
+                                           TrackBrush="{DynamicResource WidgetSurfaceBrush}"
+                                           OutlineBrush="{DynamicResource InputSurfaceBrush}"
+                                           IsAnimated="{Binding IsWidgetAnimated}" />
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding WidgetPhaseLabel}" Foreground="{Binding FluidPhaseTextBrush}" FontSize="13" FontWeight="Normal" HorizontalAlignment="Center" />
+                <TextBlock Text="{Binding TimeText}" Foreground="{Binding FluidTimeTextBrush}" FontSize="21" FontWeight="Normal" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
