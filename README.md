@@ -32,7 +32,10 @@ Focus Pace 是一个极简、低打扰的 Windows 专注节奏工具。它用正
 
 ## 下载
 
-从 [GitHub Releases](https://github.com/yuzhounh/focus-pace/releases) 下载 Windows x64 单文件版本 `FocusPace.exe`，无需安装即可运行。
+从 [GitHub Releases](https://github.com/yuzhounh/focus-pace/releases) 下载 Windows x64 版本：
+
+- `FocusPace-Setup.exe`：传统安装版，提供开始菜单、可选桌面快捷方式和标准卸载入口。
+- `FocusPace.exe`：便携单文件版，无需安装即可运行。
 
 ## 运行与开发
 
@@ -56,6 +59,14 @@ dotnet run --project .\tests\FocusPace.Core.Tests\FocusPace.Core.Tests.csproj
 ```
 
 输出位于 `artifacts/publish/win-x64/`。
+
+安装 Inno Setup 6 后生成传统安装包：
+
+```powershell
+.\scripts\build-installer.ps1
+```
+
+输出位于 `artifacts/installer/FocusPace-Setup.exe`。
 
 ## 数据
 
