@@ -51,6 +51,7 @@ public sealed class AppSettings
     public int RestMinutes { get; set; } = 5;
     public bool StartWithWindows { get; set; }
     public bool WidgetAlwaysOnTop { get; set; } = true;
+    public bool VoiceAnnouncementsEnabled { get; set; } = true;
     public WidgetStyleKind WidgetStyle { get; set; } = WidgetStyleKind.Bar;
     public WidgetMotionKind WidgetMotion { get; set; } = WidgetMotionKind.Dynamic;
     public WidgetOpacityKind WidgetOpacity { get; set; } = WidgetOpacityKind.Opacity90;
@@ -76,5 +77,6 @@ public sealed class SessionSnapshot
     public long AccumulatedTicks { get; set; }
     public DateTimeOffset? RunningSinceUtc { get; set; }
     public bool GoalAnnounced { get; set; }
+    public bool GoalApproachingAnnounced { get; set; }
     public DateTimeOffset BootMarkerUtc { get; set; }
 }

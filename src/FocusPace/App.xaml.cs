@@ -20,6 +20,7 @@ public partial class App : System.Windows.Application
     private WidgetWindow? _widgetWindow;
     private GoalToastWindow? _goalToastWindow;
     private TrayIconService? _trayIcon;
+    private VoiceAnnouncementService? _voiceAnnouncements;
     private readonly List<RestOverlayWindow> _restOverlayWindows = [];
     private bool _restoreWidgetAfterRestOverlay;
     private bool _isExiting;
@@ -60,11 +61,13 @@ public partial class App : System.Windows.Application
         _viewModel.AppearanceChanged += (_, _) => ThemeService.Apply(Resources, _viewModel.SelectedColorTheme);
         _viewModel.ExitRequested += (_, _) => ExitApplication();
         _viewModel.GoalReached += ViewModelOnGoalReached;
+        _viewModel.FocusEndingSoon += ViewModelOnFocusEndingSoon;
 
         _mainWindow = new MainWindow { DataContext = _viewModel };
         _widgetWindow = new WidgetWindow { DataContext = _viewModel };
         _goalToastWindow = new GoalToastWindow(_viewModel);
         _trayIcon = new TrayIconService(_viewModel);
+        _voiceAnnouncements = new VoiceAnnouncementService(_viewModel);
 
         SystemEvents.SessionSwitch += SystemEventsOnSessionSwitch;
         SystemEvents.PowerModeChanged += SystemEventsOnPowerModeChanged;
@@ -98,6 +101,13 @@ public partial class App : System.Windows.Application
             _singleInstanceMutex.Dispose();
         }
 
+        if (_viewModel is not null)
+        {
+            _viewModel.GoalReached -= ViewModelOnGoalReached;
+            _viewModel.FocusEndingSoon -= ViewModelOnFocusEndingSoon;
+        }
+
+        _voiceAnnouncements?.Dispose();
         _trayIcon?.Dispose();
         _viewModel?.Dispose();
         base.OnExit(e);
@@ -167,7 +177,15 @@ public partial class App : System.Windows.Application
         CloseRestOverlay();
         if (_goalToastWindow is not null && _widgetWindow is not null)
         {
-            _goalToastWindow.ShowGoal(e.Phase, e.Target, _widgetWindow);
+            _goalToastWindow.ShowRestComplete(_widgetWindow);
+        }
+    }
+
+    private void ViewModelOnFocusEndingSoon(object? sender, GoalApproachingEventArgs e)
+    {
+        if (_goalToastWindow is not null && _widgetWindow is not null)
+        {
+            _goalToastWindow.ShowFocusEndingSoon(_widgetWindow);
         }
     }
 

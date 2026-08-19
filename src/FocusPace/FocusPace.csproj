@@ -8,7 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>FocusPace</AssemblyName>
     <RootNamespace>FocusPace</RootNamespace>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Product>Focus Pace</Product>
     <Description>A calm Windows focus-and-rest rhythm utility.</Description>
     <ApplicationManifest>app.manifest</ApplicationManifest>

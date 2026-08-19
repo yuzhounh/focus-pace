@@ -20,6 +20,8 @@
                       IsChecked="{Binding StartWithWindows, Mode=TwoWay}" />
             <MenuItem Header="Always on top" IsCheckable="True"
                       IsChecked="{Binding WidgetAlwaysOnTop, Mode=TwoWay}" />
+            <MenuItem Header="Voice announcements" IsCheckable="True"
+                      IsChecked="{Binding VoiceAnnouncementsEnabled, Mode=TwoWay}" />
             <MenuItem Header="Widget style">
                 <MenuItem Header="Bar" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsBarWidget, Mode=OneWay}"
                           Command="{Binding SelectWidgetStyleCommand}" CommandParameter="{x:Static models:WidgetStyleKind.Bar}" />

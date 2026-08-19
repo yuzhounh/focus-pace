@@ -27,9 +27,8 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid Width="38" Height="38">
-                <Ellipse Stroke="{DynamicResource BorderBrush}" StrokeThickness="6" />
                 <Path Stroke="{DynamicResource AccentBrush}" StrokeThickness="6" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
-                      Data="M 19,3 A 16,16 0 1 1 7.7,7.7" />
+                      Data="M 22.33,3.35 A 16,16 0 1 1 7.11,8.30" />
             </Grid>
             <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
                 <TextBlock Text="Focus Pace" FontSize="24" FontWeight="SemiBold" />

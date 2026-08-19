@@ -1,8 +1,12 @@
 #define MyAppName "Focus Pace"
-#define MyAppVersion "0.1.0"
+#define MyAppVersion "0.2.0"
 #define MyAppPublisher "yuzhounh"
 #define MyAppURL "https://github.com/yuzhounh/focus-pace"
 #define MyAppExeName "FocusPace.exe"
+#define MyAppRuntime "win-x64"
+#ifndef MyAppSource
+#define MyAppSource "..\artifacts\publish\win-x64\FocusPace.exe"
+#endif
 
 [Setup]
 AppId={{FB0D354A-1155-49A9-9968-CA46CE33866C}
@@ -21,7 +25,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 MinVersion=10.0.17763
 OutputDir=..\artifacts\installer
-OutputBaseFilename=FocusPace-Setup
+OutputBaseFilename=FocusPace-{#MyAppVersion}-{#MyAppRuntime}-Setup
 SetupIconFile=..\src\FocusPace\Assets\FocusPace.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma2/ultra64
@@ -40,7 +44,7 @@ VersionInfoCopyright=Copyright (c) 2026 {#MyAppPublisher}
 Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Additional shortcuts:"; Flags: unchecked
 
 [Files]
-Source: "..\artifacts\publish\win-x64\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyAppSource}"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{autoprograms}\Focus Pace"; Filename: "{app}\{#MyAppExeName}"

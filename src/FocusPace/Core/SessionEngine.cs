@@ -8,6 +8,12 @@ public sealed class GoalReachedEventArgs(SessionPhase phase, TimeSpan target) : 
     public TimeSpan Target { get; } = target;
 }
 
+public sealed class GoalApproachingEventArgs(SessionPhase phase, TimeSpan remaining) : EventArgs
+{
+    public SessionPhase Phase { get; } = phase;
+    public TimeSpan Remaining { get; } = remaining;
+}
+
 public sealed class SessionEngine
 {
     private static readonly TimeSpan BootMarkerTolerance = TimeSpan.FromMinutes(3);
@@ -22,11 +28,13 @@ public sealed class SessionEngine
 
     public event EventHandler? StateChanged;
     public event EventHandler<GoalReachedEventArgs>? GoalReached;
+    public event EventHandler<GoalApproachingEventArgs>? GoalApproaching;
 
     public SessionPhase Phase { get; private set; } = SessionPhase.Ready;
     public bool IsPaused { get; private set; }
     public TimeSpan Target { get; private set; }
     public bool GoalAnnounced { get; private set; }
+    public bool GoalApproachingAnnounced { get; private set; }
     public bool IsGoalReached => Phase != SessionPhase.Ready && Target > TimeSpan.Zero && Elapsed >= Target;
 
     public TimeSpan Elapsed
@@ -65,6 +73,7 @@ public sealed class SessionEngine
         _runningSinceUtc = _clock.UtcNow;
         IsPaused = false;
         GoalAnnounced = false;
+        GoalApproachingAnnounced = false;
         OnStateChanged();
     }
 
@@ -104,6 +113,7 @@ public sealed class SessionEngine
         _runningSinceUtc = _clock.UtcNow;
         IsPaused = false;
         GoalAnnounced = false;
+        GoalApproachingAnnounced = false;
         OnStateChanged();
     }
 
@@ -125,6 +135,11 @@ public sealed class SessionEngine
         }
 
         Target = target;
+        if (Target - Elapsed > TimeSpan.FromMinutes(3))
+        {
+            GoalApproachingAnnounced = false;
+        }
+
         if (!IsGoalReached)
         {
             GoalAnnounced = false;
@@ -141,11 +156,24 @@ public sealed class SessionEngine
         _runningSinceUtc = null;
         IsPaused = false;
         GoalAnnounced = false;
+        GoalApproachingAnnounced = false;
         OnStateChanged();
     }
 
     public void Pulse()
     {
+        var remaining = Target - Elapsed;
+        if (Phase == SessionPhase.Focus &&
+            !GoalApproachingAnnounced &&
+            Target > TimeSpan.FromMinutes(3) &&
+            remaining > TimeSpan.Zero &&
+            remaining <= TimeSpan.FromMinutes(3))
+        {
+            GoalApproachingAnnounced = true;
+            OnStateChanged();
+            GoalApproaching?.Invoke(this, new GoalApproachingEventArgs(Phase, remaining));
+        }
+
         if (!GoalAnnounced && IsGoalReached)
         {
             GoalAnnounced = true;
@@ -162,6 +190,7 @@ public sealed class SessionEngine
         AccumulatedTicks = _accumulated.Ticks,
         RunningSinceUtc = _runningSinceUtc,
         GoalAnnounced = GoalAnnounced,
+        GoalApproachingAnnounced = GoalApproachingAnnounced,
         BootMarkerUtc = _clock.BootMarkerUtc
     };
 
@@ -183,6 +212,7 @@ public sealed class SessionEngine
         _accumulated = TimeSpan.FromTicks(Math.Max(0, snapshot.AccumulatedTicks));
         _runningSinceUtc = snapshot.IsPaused ? null : snapshot.RunningSinceUtc ?? _clock.UtcNow;
         GoalAnnounced = snapshot.GoalAnnounced;
+        GoalApproachingAnnounced = snapshot.GoalApproachingAnnounced;
         OnStateChanged();
         return true;
     }

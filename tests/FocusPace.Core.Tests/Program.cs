@@ -6,6 +6,7 @@ var tests = new (string Name, Action Run)[]
     ("Focus accumulates forward", FocusAccumulatesForward),
     ("Pause excludes time away", PauseExcludesTimeAway),
     ("Goal fires once and overtime continues", GoalFiresOnceAndOvertimeContinues),
+    ("Focus warns once with three minutes remaining", FocusWarnsOnceWithThreeMinutesRemaining),
     ("Changing target updates the active goal", ChangingTargetUpdatesActiveGoal),
     ("Same-boot session restores", SameBootSessionRestores),
     ("Different-boot session is rejected", DifferentBootSessionIsRejected)
@@ -65,6 +66,27 @@ static void GoalFiresOnceAndOvertimeContinues()
     Equal(1, goals);
     clock.Advance(TimeSpan.FromMinutes(4));
     Equal(TimeSpan.FromMinutes(49), engine.Elapsed);
+}
+
+static void FocusWarnsOnceWithThreeMinutesRemaining()
+{
+    var clock = new ManualClock();
+    var engine = new SessionEngine(clock);
+    var warnings = 0;
+    engine.GoalApproaching += (_, e) =>
+    {
+        Equal(SessionPhase.Focus, e.Phase);
+        True(e.Remaining <= TimeSpan.FromMinutes(3));
+        warnings++;
+    };
+    engine.Start(SessionPhase.Focus, TimeSpan.FromMinutes(45));
+    clock.Advance(TimeSpan.FromMinutes(41) + TimeSpan.FromSeconds(59));
+    engine.Pulse();
+    Equal(0, warnings);
+    clock.Advance(TimeSpan.FromSeconds(1));
+    engine.Pulse();
+    engine.Pulse();
+    Equal(1, warnings);
 }
 
 static void ChangingTargetUpdatesActiveGoal()

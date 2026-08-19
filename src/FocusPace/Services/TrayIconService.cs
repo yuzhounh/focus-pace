@@ -26,6 +26,7 @@ public sealed class TrayIconService : IDisposable
     private readonly MenuItem _widgetItem;
     private readonly MenuItem _startupItem;
     private readonly MenuItem _alwaysOnTopItem;
+    private readonly MenuItem _voiceAnnouncementsItem;
     private readonly IReadOnlyDictionary<WidgetStyleKind, MenuItem> _widgetStyleItems;
     private readonly IReadOnlyDictionary<WidgetMotionKind, MenuItem> _widgetMotionItems;
     private readonly IReadOnlyDictionary<WidgetOpacityKind, MenuItem> _widgetOpacityItems;
@@ -46,6 +47,9 @@ public sealed class TrayIconService : IDisposable
         _startupItem.IsCheckable = true;
         _alwaysOnTopItem = CreateMenuItem("Always on top", () => _viewModel.WidgetAlwaysOnTop = !_viewModel.WidgetAlwaysOnTop);
         _alwaysOnTopItem.IsCheckable = true;
+        _voiceAnnouncementsItem = CreateMenuItem("Voice announcements", () =>
+            _viewModel.VoiceAnnouncementsEnabled = !_viewModel.VoiceAnnouncementsEnabled);
+        _voiceAnnouncementsItem.IsCheckable = true;
         _widgetStyleItems = Enum.GetValues<WidgetStyleKind>().ToDictionary(
             style => style,
             style => CreateCheckMenuItem(style.ToString(), () => _viewModel.SelectedWidgetStyle = style));
@@ -102,6 +106,7 @@ public sealed class TrayIconService : IDisposable
         _menu.Items.Add(new Separator());
         _menu.Items.Add(_startupItem);
         _menu.Items.Add(_alwaysOnTopItem);
+        _menu.Items.Add(_voiceAnnouncementsItem);
         _menu.Items.Add(widgetStyleMenu);
         _menu.Items.Add(widgetMotionMenu);
         _menu.Items.Add(widgetOpacityMenu);
@@ -126,14 +131,12 @@ public sealed class TrayIconService : IDisposable
         _notifyIcon.MouseUp += NotifyIconOnMouseUp;
         _notifyIcon.DoubleClick += (_, _) => _viewModel.ShowSettingsCommand.Execute(null);
         _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
-        _viewModel.GoalReached += OnGoalReached;
         _viewModel.AppearanceChanged += ViewModelOnAppearanceChanged;
         RefreshMenu();
     }
 
     public void Dispose()
     {
-        _viewModel.GoalReached -= OnGoalReached;
         _viewModel.AppearanceChanged -= ViewModelOnAppearanceChanged;
         _viewModel.PropertyChanged -= ViewModelOnPropertyChanged;
         _menu.Opened -= MenuOnOpened;
@@ -212,6 +215,7 @@ public sealed class TrayIconService : IDisposable
         _widgetItem.Header = _viewModel.WidgetVisibilityActionText;
         _startupItem.IsChecked = _viewModel.StartWithWindows;
         _alwaysOnTopItem.IsChecked = _viewModel.WidgetAlwaysOnTop;
+        _voiceAnnouncementsItem.IsChecked = _viewModel.VoiceAnnouncementsEnabled;
         foreach (var pair in _widgetStyleItems)
         {
             pair.Value.IsChecked = pair.Key == _viewModel.SelectedWidgetStyle;
@@ -233,16 +237,6 @@ public sealed class TrayIconService : IDisposable
         }
     }
 
-    private void OnGoalReached(object? sender, GoalReachedEventArgs e)
-    {
-        _notifyIcon.BalloonTipIcon = Forms.ToolTipIcon.None;
-        _notifyIcon.BalloonTipTitle = e.Phase == SessionPhase.Focus ? "Focus goal reached" : "Rest complete";
-        _notifyIcon.BalloonTipText = e.Phase == SessionPhase.Focus
-            ? $"{e.Target.TotalMinutes:0} minutes focused. Take a rest when you're ready."
-            : "Ready when you are.";
-        _notifyIcon.ShowBalloonTip(5000);
-    }
-
     private Icon CreateProgressIcon()
     {
         var accent = ThemeService.GetAccentColor(_viewModel.SelectedColorTheme);
@@ -250,8 +244,6 @@ public sealed class TrayIconService : IDisposable
         using var bitmap = new Bitmap(64, 64, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
         using var graphics = Graphics.FromImage(bitmap);
         graphics.SmoothingMode = SmoothingMode.AntiAlias;
-        using var quietPen = new Pen(Color.FromArgb(82, drawingAccent), 8);
-        graphics.DrawEllipse(quietPen, 7, 7, 50, 50);
         if (_viewModel.SelectedColorTheme == ColorThemeKind.Brand)
         {
             DrawBrandArc(graphics);
@@ -263,7 +255,7 @@ public sealed class TrayIconService : IDisposable
                 StartCap = LineCap.Round,
                 EndCap = LineCap.Round
             };
-            graphics.DrawArc(progressPen, 7, 7, 50, 50, -90, 286);
+            graphics.DrawArc(progressPen, 7, 7, 50, 50, -78, 300);
         }
 
         var handle = bitmap.GetHicon();
@@ -280,8 +272,8 @@ public sealed class TrayIconService : IDisposable
 
     private static void DrawBrandArc(Graphics graphics)
     {
-        const float startAngle = -90;
-        const float totalSweep = 286;
+        const float startAngle = -78;
+        const float totalSweep = 300;
         const int steps = 120;
         var colors = ThemeService.GetBrandColors();
         for (var step = 0; step < steps; step++)

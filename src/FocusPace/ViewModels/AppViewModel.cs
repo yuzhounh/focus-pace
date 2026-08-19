@@ -89,6 +89,7 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
 
         _engine.StateChanged += EngineOnStateChanged;
         _engine.GoalReached += EngineOnGoalReached;
+        _engine.GoalApproaching += EngineOnGoalApproaching;
         _uiTimer = new DispatcherTimer(DispatcherPriority.Background)
         {
             Interval = TimeSpan.FromMilliseconds(250)
@@ -105,6 +106,7 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
     public event EventHandler? ToggleWidgetRequested;
     public event EventHandler? ExitRequested;
     public event EventHandler<GoalReachedEventArgs>? GoalReached;
+    public event EventHandler<GoalApproachingEventArgs>? FocusEndingSoon;
     public event EventHandler? AppearanceChanged;
 
     public ICommand PrimaryCommand { get; }
@@ -143,6 +145,9 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
     public string SessionTypeLabel => Phase == SessionPhase.Rest ? "Rest" : "Focus";
     public string TimeText => FormatTime(_engine.Elapsed);
     public string TargetText => FormatTime(_engine.Target);
+    public TimeSpan Remaining => IsReady || _engine.Elapsed >= _engine.Target
+        ? TimeSpan.Zero
+        : _engine.Target - _engine.Elapsed;
     public string WidgetText => IsReady ? "Ready · Focus" : $"{WidgetPhaseLabel}   {TimeText}";
     public string WidgetTooltip => IsReady
         ? "Ready when you are"
@@ -394,6 +399,22 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
         }
     }
 
+    public bool VoiceAnnouncementsEnabled
+    {
+        get => _settings.VoiceAnnouncementsEnabled;
+        set
+        {
+            if (_settings.VoiceAnnouncementsEnabled == value)
+            {
+                return;
+            }
+
+            _settings.VoiceAnnouncementsEnabled = value;
+            Save();
+            OnPropertyChanged();
+        }
+    }
+
     public void StartFocus() => _engine.Start(SessionPhase.Focus, TimeSpan.FromMinutes(FocusMinutes));
     public void StartFocusExtension() => _engine.Start(SessionPhase.Focus, TimeSpan.FromMinutes(3));
     public void StartRest() => _engine.Start(SessionPhase.Rest, TimeSpan.FromMinutes(RestMinutes));
@@ -500,6 +521,7 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
         _uiTimer.Tick -= UiTimerOnTick;
         _engine.StateChanged -= EngineOnStateChanged;
         _engine.GoalReached -= EngineOnGoalReached;
+        _engine.GoalApproaching -= EngineOnGoalApproaching;
     }
 
     private void RunPrimaryAction()
@@ -559,6 +581,9 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
         GoalReached?.Invoke(this, e);
     }
 
+    private void EngineOnGoalApproaching(object? sender, GoalApproachingEventArgs e) =>
+        FocusEndingSoon?.Invoke(this, e);
+
     private void ApplyAutomaticStateTransitions()
     {
         if (Phase == SessionPhase.Ready)
@@ -594,6 +619,7 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
         OnPropertyChanged(nameof(SessionTypeLabel));
         OnPropertyChanged(nameof(TimeText));
         OnPropertyChanged(nameof(TargetText));
+        OnPropertyChanged(nameof(Remaining));
         OnPropertyChanged(nameof(WidgetText));
         OnPropertyChanged(nameof(WidgetTooltip));
         OnPropertyChanged(nameof(DetailText));
