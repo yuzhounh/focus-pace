@@ -17,6 +17,7 @@ public sealed class GoalApproachingEventArgs(SessionPhase phase, TimeSpan remain
 public sealed class SessionEngine
 {
     private static readonly TimeSpan BootMarkerTolerance = TimeSpan.FromMinutes(3);
+    private static readonly TimeSpan FocusEndingSoonThreshold = TimeSpan.FromMinutes(5);
     private readonly IClock _clock;
     private TimeSpan _accumulated;
     private DateTimeOffset? _runningSinceUtc;
@@ -135,7 +136,7 @@ public sealed class SessionEngine
         }
 
         Target = target;
-        if (Target - Elapsed > TimeSpan.FromMinutes(3))
+        if (Target - Elapsed > FocusEndingSoonThreshold)
         {
             GoalApproachingAnnounced = false;
         }
@@ -165,9 +166,9 @@ public sealed class SessionEngine
         var remaining = Target - Elapsed;
         if (Phase == SessionPhase.Focus &&
             !GoalApproachingAnnounced &&
-            Target > TimeSpan.FromMinutes(3) &&
+            Target > FocusEndingSoonThreshold &&
             remaining > TimeSpan.Zero &&
-            remaining <= TimeSpan.FromMinutes(3))
+            remaining <= FocusEndingSoonThreshold)
         {
             GoalApproachingAnnounced = true;
             OnStateChanged();

@@ -6,8 +6,9 @@ var tests = new (string Name, Action Run)[]
     ("Focus accumulates forward", FocusAccumulatesForward),
     ("Pause excludes time away", PauseExcludesTimeAway),
     ("Goal fires once and overtime continues", GoalFiresOnceAndOvertimeContinues),
-    ("Focus warns once with three minutes remaining", FocusWarnsOnceWithThreeMinutesRemaining),
+    ("Focus warns once with five minutes remaining", FocusWarnsOnceWithFiveMinutesRemaining),
     ("Changing target updates the active goal", ChangingTargetUpdatesActiveGoal),
+    ("Extending a completed Focus goal resumes progress", ExtendingCompletedFocusGoalResumesProgress),
     ("Same-boot session restores", SameBootSessionRestores),
     ("Different-boot session is rejected", DifferentBootSessionIsRejected)
 };
@@ -68,7 +69,7 @@ static void GoalFiresOnceAndOvertimeContinues()
     Equal(TimeSpan.FromMinutes(49), engine.Elapsed);
 }
 
-static void FocusWarnsOnceWithThreeMinutesRemaining()
+static void FocusWarnsOnceWithFiveMinutesRemaining()
 {
     var clock = new ManualClock();
     var engine = new SessionEngine(clock);
@@ -76,11 +77,11 @@ static void FocusWarnsOnceWithThreeMinutesRemaining()
     engine.GoalApproaching += (_, e) =>
     {
         Equal(SessionPhase.Focus, e.Phase);
-        True(e.Remaining <= TimeSpan.FromMinutes(3));
+        True(e.Remaining <= TimeSpan.FromMinutes(5));
         warnings++;
     };
     engine.Start(SessionPhase.Focus, TimeSpan.FromMinutes(45));
-    clock.Advance(TimeSpan.FromMinutes(41) + TimeSpan.FromSeconds(59));
+    clock.Advance(TimeSpan.FromMinutes(39) + TimeSpan.FromSeconds(59));
     engine.Pulse();
     Equal(0, warnings);
     clock.Advance(TimeSpan.FromSeconds(1));
@@ -100,6 +101,24 @@ static void ChangingTargetUpdatesActiveGoal()
     True(!engine.IsGoalReached);
     clock.Advance(TimeSpan.FromMinutes(10));
     True(engine.IsGoalReached);
+}
+
+static void ExtendingCompletedFocusGoalResumesProgress()
+{
+    var clock = new ManualClock();
+    var engine = new SessionEngine(clock);
+    engine.Start(SessionPhase.Focus, TimeSpan.FromMinutes(45));
+    clock.Advance(TimeSpan.FromMinutes(45));
+    engine.Pulse();
+    True(engine.IsGoalReached);
+    True(engine.GoalAnnounced);
+
+    engine.UpdateTarget(engine.Target + TimeSpan.FromMinutes(5));
+
+    Equal(TimeSpan.FromMinutes(50), engine.Target);
+    True(!engine.IsGoalReached);
+    True(!engine.GoalAnnounced);
+    Equal(TimeSpan.FromMinutes(5), engine.Target - engine.Elapsed);
 }
 
 static void SameBootSessionRestores()

@@ -23,6 +23,7 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
     private readonly RelayCommand _pauseResumeCommand;
     private readonly RelayCommand _restartCommand;
     private readonly RelayCommand _startRestCommand;
+    private readonly RelayCommand _extendFocusCommand;
     private int _lastDisplayedSecond = -1;
     private uint _readyInputBaseline;
 
@@ -49,6 +50,8 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
         PauseResumeCommand = _pauseResumeCommand;
         _restartCommand = new RelayCommand(_ => Restart(), _ => Phase != SessionPhase.Ready);
         RestartCommand = _restartCommand;
+        _extendFocusCommand = new RelayCommand(_ => ExtendFocus(), _ => Phase == SessionPhase.Focus);
+        ExtendFocusCommand = _extendFocusCommand;
         ShowSettingsCommand = new RelayCommand(_ => ShowSettingsRequested?.Invoke(this, EventArgs.Empty));
         SelectWidgetStyleCommand = new RelayCommand(parameter =>
         {
@@ -114,6 +117,7 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
     public ICommand StartRestCommand { get; }
     public ICommand PauseResumeCommand { get; }
     public ICommand RestartCommand { get; }
+    public ICommand ExtendFocusCommand { get; }
     public ICommand ShowSettingsCommand { get; }
     public ICommand SelectWidgetStyleCommand { get; }
     public ICommand SelectColorThemeCommand { get; }
@@ -416,9 +420,16 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
     }
 
     public void StartFocus() => _engine.Start(SessionPhase.Focus, TimeSpan.FromMinutes(FocusMinutes));
-    public void StartFocusExtension() => _engine.Start(SessionPhase.Focus, TimeSpan.FromMinutes(3));
+    public void StartFocusExtension() => _engine.Start(SessionPhase.Focus, TimeSpan.FromMinutes(5));
     public void StartRest() => _engine.Start(SessionPhase.Rest, TimeSpan.FromMinutes(RestMinutes));
     public void Restart() => _engine.Restart();
+    public void ExtendFocus()
+    {
+        if (Phase == SessionPhase.Focus)
+        {
+            _engine.UpdateTarget(_engine.Target + TimeSpan.FromMinutes(5));
+        }
+    }
 
     public void PauseOrResume()
     {
@@ -638,6 +649,7 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
         _pauseResumeCommand.RaiseCanExecuteChanged();
         _restartCommand.RaiseCanExecuteChanged();
         _startRestCommand.RaiseCanExecuteChanged();
+        _extendFocusCommand.RaiseCanExecuteChanged();
         (StartFocusCommand as RelayCommand)?.RaiseCanExecuteChanged();
         (DecreaseFocusCommand as RelayCommand)?.RaiseCanExecuteChanged();
         (DecreaseRestCommand as RelayCommand)?.RaiseCanExecuteChanged();

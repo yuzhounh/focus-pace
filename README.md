@@ -20,9 +20,9 @@ Focus Pace 是一个极简、低打扰的 Windows 专注节奏工具。它用正
 - Brand、Ocean、Violet、Mint、Amber、Rose、Silver 全局配色
 - 可调 Widget 不透明度、置顶状态和开机启动
 - Focus 达标后使用当前桌面壁纸进入全屏 Rest 提醒
-- Focus 结束前三分钟显示提醒，开始 Focus / Rest 时可选语音播报
+- Focus 结束前五分钟显示提醒，开始 Focus / Rest 时可选语音播报
 - Rest 完成提示与悬浮控件对齐，主界面、任务栏和托盘 Logo 采用统一开口
-- Rest 全屏计时、延长 Focus 3 分钟和退出确认
+- Rest 全屏计时、延长 Focus 5 分钟和退出确认
 - Ready 检测到鼠标或键盘活动后自动开始 Focus
 - Focus 无操作达到 Rest Goal 后自动回到 Ready
 - 暂停、恢复、重启以及提前切换 Focus / Rest

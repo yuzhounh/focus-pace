@@ -36,7 +36,7 @@
                         <TextBlock Text="Step away for a moment and let yourself recover."
                                    Margin="0,0,0,20" TextWrapping="Wrap" TextAlignment="Center" FontSize="14"
                                    Foreground="{DynamicResource TextSecondaryBrush}" />
-                        <Button Content="Extend Focus by 3 minutes" Style="{StaticResource PrimaryButtonStyle}"
+                        <Button Content="Extend Focus by 5 minutes" Style="{StaticResource PrimaryButtonStyle}"
                                 Click="ExtendFocusButton_OnClick" />
                         <Button Content="Leave full screen" Style="{StaticResource SecondaryButtonStyle}"
                                 Margin="0,8,0,0" Click="LeaveFullScreenButton_OnClick" />
