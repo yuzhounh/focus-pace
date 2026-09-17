@@ -5,7 +5,11 @@ param(
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
 $publishScript = Join-Path $PSScriptRoot "publish.ps1"
 $installerScript = Join-Path $repositoryRoot "installer\FocusPace.iss"
+$appProject = Join-Path $repositoryRoot "src\FocusPace\FocusPace.csproj"
 $publishedExecutable = Join-Path $repositoryRoot "artifacts\publish\win-x64\FocusPace.exe"
+[xml]$appProjectXml = Get-Content -LiteralPath $appProject
+$version = [string]($appProjectXml.Project.PropertyGroup.Version | Select-Object -First 1)
+$portableArchive = Join-Path $repositoryRoot "artifacts\installer\FocusPace-$version-win-x64-Portable.zip"
 $compilerCandidates = @(
     (Join-Path $env:LOCALAPPDATA "Programs\Inno Setup 6\ISCC.exe"),
     "C:\Program Files (x86)\Inno Setup 6\ISCC.exe",
@@ -29,4 +33,7 @@ if (-not (Test-Path -LiteralPath $publishedExecutable)) {
 & $compiler $installerScript
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+Compress-Archive -LiteralPath $publishedExecutable -DestinationPath $portableArchive -Force
+
 Write-Host "Built Focus Pace installer in artifacts\installer"
+Write-Host "Built Focus Pace portable archive: $portableArchive"

@@ -37,7 +37,7 @@ Focus Pace 是一个极简、低打扰的 Windows 专注节奏工具。它用正
 从 [GitHub Releases](https://github.com/yuzhounh/focus-pace/releases) 下载 Windows x64 版本：
 
 - `FocusPace-0.2.1-win-x64-Setup.exe`：传统安装版，提供开始菜单、可选桌面快捷方式和标准卸载入口。
-- `FocusPace-0.2.1-win-x64-Portable.exe`：便携单文件版，无需安装即可运行。
+- `FocusPace-0.2.1-win-x64-Portable.zip`：便携版，解压后运行 `FocusPace.exe`，无需安装。
 
 ## 运行与开发
 
