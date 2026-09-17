@@ -5,8 +5,13 @@ param(
 )
 
 $repositoryRoot = Split-Path -Parent $PSScriptRoot
-$localDotnet = Join-Path $repositoryRoot ".dotnet\dotnet.exe"
-$dotnet = if (Test-Path -LiteralPath $localDotnet) { $localDotnet } else { "dotnet" }
+$dotnetCandidates = @(
+    (Join-Path $repositoryRoot ".dotnet\dotnet.exe"),
+    (Join-Path $repositoryRoot ".tools\dotnet\dotnet.exe"),
+    "D:\Archives\20260914 Soft Trace\.tools\dotnet\dotnet.exe"
+)
+$dotnet = ($dotnetCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1)
+if (-not $dotnet) { $dotnet = "dotnet" }
 $output = Join-Path $repositoryRoot "artifacts\publish\$Runtime"
 
 $arguments = @(

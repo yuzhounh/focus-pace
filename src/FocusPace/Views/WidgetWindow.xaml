@@ -12,7 +12,7 @@
         FontFamily="Segoe UI Variable Text, Segoe UI">
     <Window.Resources>
         <infra:ProgressWidthConverter x:Key="ProgressWidthConverter" />
-        <ContextMenu x:Key="WidgetMenu" StaysOpen="False"
+        <ContextMenu x:Key="WidgetMenu" StaysOpen="False" HasDropShadow="False"
                      DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
             <MenuItem Header="Open Focus Pace" Command="{Binding ShowSettingsCommand}" />
             <Separator />
@@ -69,6 +69,7 @@
             <Separator />
             <MenuItem Header="{Binding PauseResumeText}" Command="{Binding PauseResumeCommand}" />
             <MenuItem Header="Restart session" Command="{Binding RestartCommand}" />
+            <MenuItem Header="Extend by 5 minutes" Command="{Binding ExtendFocusCommand}" />
             <MenuItem Header="Start Focus" Command="{Binding StartFocusCommand}" />
             <MenuItem Header="Start Rest" Command="{Binding StartRestCommand}" />
             <Separator />

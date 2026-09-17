@@ -21,6 +21,7 @@ public sealed class TrayIconService : IDisposable
     private readonly MenuItem _statusItem;
     private readonly MenuItem _pauseItem;
     private readonly MenuItem _restartItem;
+    private readonly MenuItem _extendFocusItem;
     private readonly MenuItem _focusItem;
     private readonly MenuItem _restItem;
     private readonly MenuItem _widgetItem;
@@ -40,6 +41,7 @@ public sealed class TrayIconService : IDisposable
         _statusItem = CreateMenuItem(string.Empty, null, false);
         _pauseItem = CreateMenuItem(string.Empty, () => _viewModel.PauseResumeCommand.Execute(null));
         _restartItem = CreateMenuItem("Restart session", () => _viewModel.RestartCommand.Execute(null));
+        _extendFocusItem = CreateMenuItem("Extend by 5 minutes", () => _viewModel.ExtendFocusCommand.Execute(null));
         _focusItem = CreateMenuItem("Start Focus", () => _viewModel.StartFocusCommand.Execute(null));
         _restItem = CreateMenuItem("Start Rest", () => _viewModel.StartRestCommand.Execute(null));
         _widgetItem = CreateMenuItem(string.Empty, () => _viewModel.ToggleWidgetCommand.Execute(null));
@@ -98,8 +100,9 @@ public sealed class TrayIconService : IDisposable
         _menu = new ContextMenu
         {
             Placement = PlacementMode.MousePoint,
-            HorizontalOffset = -190,
-            StaysOpen = false
+            HorizontalOffset = -200,
+            StaysOpen = false,
+            HasDropShadow = false
         };
         _menu.Items.Add(_statusItem);
         _menu.Items.Add(CreateMenuItem("Open Focus Pace", () => _viewModel.ShowSettingsCommand.Execute(null)));
@@ -114,6 +117,7 @@ public sealed class TrayIconService : IDisposable
         _menu.Items.Add(new Separator());
         _menu.Items.Add(_pauseItem);
         _menu.Items.Add(_restartItem);
+        _menu.Items.Add(_extendFocusItem);
         _menu.Items.Add(_focusItem);
         _menu.Items.Add(_restItem);
         _menu.Items.Add(new Separator());
@@ -210,6 +214,7 @@ public sealed class TrayIconService : IDisposable
         _pauseItem.Header = _viewModel.PauseResumeText;
         _pauseItem.IsEnabled = _viewModel.HasActiveSession;
         _restartItem.IsEnabled = _viewModel.HasActiveSession;
+        _extendFocusItem.IsEnabled = _viewModel.ExtendFocusCommand.CanExecute(null);
         _focusItem.IsEnabled = _viewModel.StartFocusCommand.CanExecute(null);
         _restItem.IsEnabled = _viewModel.CanStartRest;
         _widgetItem.Header = _viewModel.WidgetVisibilityActionText;
