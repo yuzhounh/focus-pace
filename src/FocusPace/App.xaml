@@ -30,6 +30,8 @@
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="0" />
             <Setter Property="HasDropShadow" Value="False" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="UseLayoutRounding" Value="True" />
             <Setter Property="FontFamily" Value="Segoe UI Variable Text, Microsoft YaHei, Segoe UI" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="Template">
@@ -38,11 +40,13 @@
                         <Border Margin="16"
                                 Background="{DynamicResource ElevatedSurfaceBrush}"
                                 BorderBrush="{DynamicResource BorderBrush}"
-                                BorderThickness="1" CornerRadius="10" Padding="5">
+                                BorderThickness="1" CornerRadius="10" Padding="5"
+                                SnapsToDevicePixels="True">
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="16" ShadowDepth="3" Direction="270" Opacity="0.16" Color="#000000" />
                             </Border.Effect>
-                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"
+                                        SnapsToDevicePixels="True" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -56,11 +60,14 @@
             <Setter Property="MinWidth" Value="184" />
             <Setter Property="FontFamily" Value="Segoe UI Variable Text, Microsoft YaHei, Segoe UI" />
             <Setter Property="FontSize" Value="13" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="UseLayoutRounding" Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="MenuItem">
-                        <Grid>
-                            <Border x:Name="MenuItemBorder" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                        <Grid SnapsToDevicePixels="True">
+                            <Border x:Name="MenuItemBorder" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}"
+                                    SnapsToDevicePixels="True">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="20" />
@@ -82,11 +89,13 @@
                                 <Border Margin="16"
                                         Background="{DynamicResource ElevatedSurfaceBrush}"
                                         BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
-                                        CornerRadius="10" Padding="5">
+                                        CornerRadius="10" Padding="5"
+                                        SnapsToDevicePixels="True">
                                     <Border.Effect>
                                         <DropShadowEffect BlurRadius="16" ShadowDepth="3" Direction="270" Opacity="0.16" Color="#000000" />
                                     </Border.Effect>
-                                    <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                    <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                    SnapsToDevicePixels="True" />
                                 </Border>
                             </Popup>
                         </Grid>
@@ -117,10 +126,14 @@
             <Setter Property="Margin" Value="8,4" />
             <Setter Property="Height" Value="1" />
             <Setter Property="Background" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="UseLayoutRounding" Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Separator">
-                        <Border Height="1" Background="{TemplateBinding Background}" />
+                        <Border Height="1"
+                                Background="{TemplateBinding Background}"
+                                SnapsToDevicePixels="True" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
