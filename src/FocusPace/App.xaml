@@ -15,6 +15,7 @@
         <SolidColorBrush x:Key="TextOnLightBackgroundBrush" Color="#FF172033" />
         <SolidColorBrush x:Key="TextOnDarkBackgroundBrush" Color="#FFF7F9FC" />
         <SolidColorBrush x:Key="BorderBrush" Color="#1F172033" />
+        <SolidColorBrush x:Key="MenuSeparatorBrush" Color="#D3E3FD" />
         <SolidColorBrush x:Key="AccentBrush" Color="#FF668DD8" />
         <SolidColorBrush x:Key="AccentHoverBrush" Color="#FF587FCC" />
         <SolidColorBrush x:Key="SecondaryHoverBrush" Color="#FFDCE3ED" />
@@ -57,7 +58,7 @@
             <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Padding" Value="9,8" />
-            <Setter Property="MinWidth" Value="184" />
+            <Setter Property="MinWidth" Value="168" />
             <Setter Property="FontFamily" Value="Segoe UI Variable Text, Microsoft YaHei, Segoe UI" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -70,20 +71,20 @@
                                     SnapsToDevicePixels="True">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="20" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="CheckMark" Text="✓" FontFamily="Segoe UI Symbol" FontSize="13"
-                                               Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Visibility="Collapsed" />
-                                    <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center" RecognizesAccessKey="True" />
-                                    <Path x:Name="SubmenuArrow" Grid.Column="2" Data="M 0 0 L 4 4 L 0 8"
+                                    <ContentPresenter ContentSource="Header" VerticalAlignment="Center" RecognizesAccessKey="True" />
+                                    <TextBlock x:Name="CheckMark" Grid.Column="1" Text="✓" FontFamily="Segoe UI Symbol" FontSize="13"
+                                               Foreground="{DynamicResource AccentBrush}" Margin="18,0,2,0"
+                                               HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed" />
+                                    <Path x:Name="SubmenuArrow" Grid.Column="1" Data="M 0 0 L 4 4 L 0 8"
                                           Stroke="{DynamicResource TextSecondaryBrush}" StrokeThickness="1.4"
                                           StrokeStartLineCap="Round" StrokeEndLineCap="Round"
                                           Margin="18,0,2,0" VerticalAlignment="Center" Visibility="Collapsed" />
                                 </Grid>
                             </Border>
-                            <Popup x:Name="PART_Popup" Placement="Right" HorizontalOffset="-10" VerticalOffset="-16"
+                            <Popup x:Name="PART_Popup" Placement="Right" HorizontalOffset="4" VerticalOffset="0"
                                    AllowsTransparency="True" Focusable="False"
                                    IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}">
                                 <Border Margin="16"
@@ -122,16 +123,17 @@
             <Setter Property="MinWidth" Value="138" />
         </Style>
 
-        <Style TargetType="Separator">
-            <Setter Property="Margin" Value="8,4" />
-            <Setter Property="Height" Value="1" />
-            <Setter Property="Background" Value="{DynamicResource BorderBrush}" />
+        <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
+            <Setter Property="Margin" Value="-5,4" />
+            <Setter Property="Height" Value="0.8" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="{DynamicResource MenuSeparatorBrush}" />
             <Setter Property="SnapsToDevicePixels" Value="True" />
             <Setter Property="UseLayoutRounding" Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Separator">
-                        <Border Height="1"
+                        <Border Height="{TemplateBinding Height}"
                                 Background="{TemplateBinding Background}"
                                 SnapsToDevicePixels="True" />
                     </ControlTemplate>
