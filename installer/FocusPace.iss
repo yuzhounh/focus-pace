@@ -1,5 +1,5 @@
 #define MyAppName "Focus Pace"
-#define MyAppVersion "0.2.0"
+#define MyAppVersion "0.2.1"
 #define MyAppPublisher "yuzhounh"
 #define MyAppURL "https://github.com/yuzhounh/focus-pace"
 #define MyAppExeName "FocusPace.exe"
