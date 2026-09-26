@@ -6,13 +6,17 @@
 
 <p align="center"><strong>Focus Pace measures progress, not pressure.</strong></p>
 
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-f59e0b.svg" alt="License: MIT"></a>
+</p>
+
 Focus Pace 是一个极简、低打扰的 Windows 专注节奏工具。它用正向累计展示已经完成的专注或休息时间，不使用制造压力的倒计时。代码、可执行文件和配置目录继续使用兼容名称 `FocusPace`。
 
 <p align="center">
   <img src="screenshots/focus%20pace.png" width="460" alt="Focus Pace main window" />
 </p>
 
-## v0.2.1 功能
+## 亮点特性 (Features)
 
 - Focus / Rest 正向累计与自动状态流转
 - 半透明、始终置顶且不抢焦点的悬浮进度控件
@@ -44,6 +48,8 @@ Focus Pace 是一个极简、低打扰的 Windows 专注节奏工具。它用正
 需要 Windows 10/11 和 .NET 8 SDK：
 
 ```powershell
+git clone https://github.com/yuzhounh/focus-pace.git
+cd focus-pace
 dotnet build .\FocusPace.sln
 dotnet run --project .\src\FocusPace\FocusPace.csproj
 ```
@@ -79,6 +85,11 @@ FocusPace 不需要账户或网络服务。设置和当前会话保存在：
 ```
 
 第一版不记录历史统计、任务、项目或标签。
+
+## 相关项目
+
+- [soft-trace](https://github.com/yuzhounh/soft-trace)：记录 Windows 前台软件使用时长。
+- [timelens-chrome-extension](https://github.com/yuzhounh/timelens-chrome-extension)：按网站统计 Chrome 浏览时间。
 
 ## 开源许可
 
