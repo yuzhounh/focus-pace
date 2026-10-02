@@ -1,13 +1,20 @@
 <p align="center">
-  <img src="src/FocusPace/Assets/FocusPace.ico" width="104" alt="Focus Pace brand icon" />
+  <img src="screenshots/focus-pace-icon.png" width="112" alt="Focus Pace logo">
 </p>
 
 <h1 align="center">Focus Pace</h1>
 
-<p align="center"><strong>Focus Pace measures progress, not pressure.</strong></p>
+<p align="center"><strong>用正向累计记录专注与休息，让进度清晰、提醒安静。</strong></p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-f59e0b.svg" alt="License: MIT"></a>
+  <a href="https://github.com/yuzhounh/focus-pace/releases/latest"><img src="https://img.shields.io/github/v/release/yuzhounh/focus-pace?style=flat&amp;color=0969da&amp;label=Release" alt="Latest stable release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-f59e0b?style=flat" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/Platform-Windows-0078d4?style=flat" alt="Platform: Windows">
+  <img src="https://img.shields.io/badge/C%23-.NET-512bd4?style=flat&amp;logo=dotnet&amp;logoColor=white" alt="C#: .NET">
+</p>
+
+<p align="center">
+  <a href="https://github.com/yuzhounh/focus-pace/releases/latest">下载发布版</a> · <a href="#运行与开发">快速开始</a> · <a href="LICENSE">开源协议</a>
 </p>
 
 Focus Pace 是一个极简、低打扰的 Windows 专注节奏工具。它用正向累计展示已经完成的专注或休息时间，不使用制造压力的倒计时。代码、可执行文件和配置目录继续使用兼容名称 `FocusPace`。
@@ -16,7 +23,7 @@ Focus Pace 是一个极简、低打扰的 Windows 专注节奏工具。它用正
   <img src="screenshots/focus%20pace.png" width="460" alt="Focus Pace main window" />
 </p>
 
-## 亮点特性 (Features)
+## 功能特点
 
 - Focus / Rest 正向累计与自动状态流转
 - 半透明、始终置顶且不抢焦点的悬浮进度控件
@@ -91,6 +98,6 @@ FocusPace 不需要账户或网络服务。设置和当前会话保存在：
 - [soft-trace](https://github.com/yuzhounh/soft-trace)：记录 Windows 前台软件使用时长。
 - [timelens-chrome-extension](https://github.com/yuzhounh/timelens-chrome-extension)：按网站统计 Chrome 浏览时间。
 
-## 开源许可
+## 开源协议
 
 本项目基于 [MIT License](LICENSE) 开源。
