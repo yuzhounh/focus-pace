@@ -13,7 +13,17 @@
     <Window.Resources>
         <infra:ProgressWidthConverter x:Key="ProgressWidthConverter" />
         <ContextMenu x:Key="WidgetMenu" StaysOpen="False" HasDropShadow="False"
+                     Style="{DynamicResource {x:Type ContextMenu}}"
                      DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <ContextMenu.Resources>
+                <ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="/FocusPace;component/Styles/TrayMenu.xaml" />
+                    </ResourceDictionary.MergedDictionaries>
+                    <Style x:Key="CompactSubmenuItemStyle" TargetType="MenuItem"
+                           BasedOn="{StaticResource {x:Type MenuItem}}" />
+                </ResourceDictionary>
+            </ContextMenu.Resources>
             <MenuItem Header="Open Focus Pace" Command="{Binding ShowSettingsCommand}" />
             <Separator />
             <MenuItem Header="Start with Windows" IsCheckable="True"

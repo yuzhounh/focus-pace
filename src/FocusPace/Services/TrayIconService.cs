@@ -10,6 +10,8 @@ using FocusPace.Core;
 using FocusPace.Models;
 using FocusPace.ViewModels;
 using Forms = System.Windows.Forms;
+using ContextMenu = System.Windows.Controls.ContextMenu;
+using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace FocusPace.Services;
 
@@ -104,6 +106,11 @@ public sealed class TrayIconService : IDisposable
             StaysOpen = false,
             HasDropShadow = false
         };
+        _menu.Resources = new ResourceDictionary
+        {
+            Source = new Uri("/FocusPace;component/Styles/TrayMenu.xaml", UriKind.Relative)
+        };
+        _menu.Style = (Style)_menu.Resources[typeof(ContextMenu)];
         _menu.Items.Add(_statusItem);
         _menu.Items.Add(CreateMenuItem("Open Focus Pace", () => _viewModel.ShowSettingsCommand.Execute(null)));
         _menu.Items.Add(new Separator());
@@ -348,7 +355,6 @@ public sealed class TrayIconService : IDisposable
     {
         var item = CreateMenuItem(header, action);
         item.IsCheckable = true;
-        item.Style = System.Windows.Application.Current.TryFindResource("CompactSubmenuItemStyle") as Style;
         return item;
     }
 

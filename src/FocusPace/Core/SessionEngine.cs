@@ -21,6 +21,7 @@ public sealed class SessionEngine
     private readonly IClock _clock;
     private TimeSpan _accumulated;
     private DateTimeOffset? _runningSinceUtc;
+    private long? _runningSinceMonotonic;
 
     public SessionEngine(IClock clock)
     {
@@ -43,9 +44,9 @@ public sealed class SessionEngine
         get
         {
             var elapsed = _accumulated;
-            if (_runningSinceUtc is { } started)
+            if (_runningSinceMonotonic.HasValue)
             {
-                var currentRun = _clock.UtcNow - started;
+                var currentRun = _clock.GetElapsedTime(_runningSinceMonotonic.Value);
                 if (currentRun > TimeSpan.Zero)
                 {
                     elapsed += currentRun;
@@ -72,6 +73,7 @@ public sealed class SessionEngine
         Target = target;
         _accumulated = TimeSpan.Zero;
         _runningSinceUtc = _clock.UtcNow;
+        _runningSinceMonotonic = _clock.MonotonicTimestamp;
         IsPaused = false;
         GoalAnnounced = false;
         GoalApproachingAnnounced = false;
@@ -87,6 +89,7 @@ public sealed class SessionEngine
 
         _accumulated = Elapsed;
         _runningSinceUtc = null;
+        _runningSinceMonotonic = null;
         IsPaused = true;
         OnStateChanged();
     }
@@ -99,6 +102,7 @@ public sealed class SessionEngine
         }
 
         _runningSinceUtc = _clock.UtcNow;
+        _runningSinceMonotonic = _clock.MonotonicTimestamp;
         IsPaused = false;
         OnStateChanged();
     }
@@ -112,6 +116,7 @@ public sealed class SessionEngine
 
         _accumulated = TimeSpan.Zero;
         _runningSinceUtc = _clock.UtcNow;
+        _runningSinceMonotonic = _clock.MonotonicTimestamp;
         IsPaused = false;
         GoalAnnounced = false;
         GoalApproachingAnnounced = false;
@@ -155,6 +160,7 @@ public sealed class SessionEngine
         Target = TimeSpan.Zero;
         _accumulated = TimeSpan.Zero;
         _runningSinceUtc = null;
+        _runningSinceMonotonic = null;
         IsPaused = false;
         GoalAnnounced = false;
         GoalApproachingAnnounced = false;
@@ -211,7 +217,21 @@ public sealed class SessionEngine
         IsPaused = snapshot.IsPaused;
         Target = TimeSpan.FromTicks(snapshot.TargetTicks);
         _accumulated = TimeSpan.FromTicks(Math.Max(0, snapshot.AccumulatedTicks));
-        _runningSinceUtc = snapshot.IsPaused ? null : snapshot.RunningSinceUtc ?? _clock.UtcNow;
+        if (!snapshot.IsPaused && snapshot.RunningSinceUtc is { } savedTime)
+        {
+            var wallDelta = _clock.UtcNow - savedTime;
+            if (wallDelta > TimeSpan.Zero)
+            {
+                _accumulated += wallDelta;
+            }
+            _runningSinceUtc = _clock.UtcNow;
+            _runningSinceMonotonic = _clock.MonotonicTimestamp;
+        }
+        else
+        {
+            _runningSinceUtc = null;
+            _runningSinceMonotonic = null;
+        }
         GoalAnnounced = snapshot.GoalAnnounced;
         GoalApproachingAnnounced = snapshot.GoalApproachingAnnounced;
         OnStateChanged();

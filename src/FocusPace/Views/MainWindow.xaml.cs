@@ -9,6 +9,14 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        Loaded += (_, _) =>
+        {
+            var workArea = SystemParameters.WorkArea;
+            if (Height > workArea.Height - 16)
+            {
+                Height = Math.Max(MinHeight, workArea.Height - 16);
+            }
+        };
     }
 
     public bool AllowClose { get; set; }

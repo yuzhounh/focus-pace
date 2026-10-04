@@ -10,7 +10,9 @@ var tests = new (string Name, Action Run)[]
     ("Changing target updates the active goal", ChangingTargetUpdatesActiveGoal),
     ("Extending a completed Focus goal resumes progress", ExtendingCompletedFocusGoalResumesProgress),
     ("Same-boot session restores", SameBootSessionRestores),
-    ("Different-boot session is rejected", DifferentBootSessionIsRejected)
+    ("Different-boot session is rejected", DifferentBootSessionIsRejected),
+    ("Clock forward shift does not alter in-process elapsed time", ClockForwardShiftDoesNotAlterInProcessElapsed),
+    ("Clock backward shift does not alter in-process elapsed time", ClockBackwardShiftDoesNotAlterInProcessElapsed)
 };
 
 var failures = 0;
@@ -162,9 +164,49 @@ static void True(bool condition)
     }
 }
 
+static void ClockForwardShiftDoesNotAlterInProcessElapsed()
+{
+    var clock = new ManualClock();
+    var engine = new SessionEngine(clock);
+    engine.Start(SessionPhase.Focus, TimeSpan.FromMinutes(45));
+    clock.Advance(TimeSpan.FromMinutes(10));
+    // User or NTP shifts system clock 2 hours forward
+    clock.ShiftSystemClock(TimeSpan.FromHours(2));
+    Equal(TimeSpan.FromMinutes(10), engine.Elapsed);
+    clock.Advance(TimeSpan.FromMinutes(5));
+    Equal(TimeSpan.FromMinutes(15), engine.Elapsed);
+}
+
+static void ClockBackwardShiftDoesNotAlterInProcessElapsed()
+{
+    var clock = new ManualClock();
+    var engine = new SessionEngine(clock);
+    engine.Start(SessionPhase.Focus, TimeSpan.FromMinutes(45));
+    clock.Advance(TimeSpan.FromMinutes(10));
+    // User or NTP shifts system clock 1 hour backward
+    clock.ShiftSystemClock(-TimeSpan.FromHours(1));
+    Equal(TimeSpan.FromMinutes(10), engine.Elapsed);
+    clock.Advance(TimeSpan.FromMinutes(5));
+    Equal(TimeSpan.FromMinutes(15), engine.Elapsed);
+}
+
 internal sealed class ManualClock : IClock
 {
-    public DateTimeOffset UtcNow { get; private set; } = new(2026, 8, 18, 0, 0, 0, TimeSpan.Zero);
+    public DateTimeOffset UtcNow { get; set; } = new(2026, 8, 18, 0, 0, 0, TimeSpan.Zero);
     public DateTimeOffset BootMarkerUtc { get; set; } = new(2026, 8, 17, 22, 0, 0, TimeSpan.Zero);
-    public void Advance(TimeSpan duration) => UtcNow += duration;
+    public TimeSpan MonotonicElapsed { get; set; } = TimeSpan.Zero;
+    public long MonotonicTimestamp => MonotonicElapsed.Ticks;
+    public TimeSpan GetElapsedTime(long startTimestamp) => TimeSpan.FromTicks(MonotonicTimestamp - startTimestamp);
+
+    public void Advance(TimeSpan duration)
+    {
+        UtcNow += duration;
+        MonotonicElapsed += duration;
+    }
+
+    public void ShiftSystemClock(TimeSpan offset)
+    {
+        UtcNow += offset;
+    }
 }
+
