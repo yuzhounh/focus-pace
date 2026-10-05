@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="screenshots/focus-pace-icon.png" width="112" alt="Focus Pace logo">
+  <img src="logo.png" width="112" alt="Focus Pace logo">
 </p>
 
 <h1 align="center">Focus Pace</h1>
@@ -20,7 +20,7 @@
 Focus Pace 是一个极简、低打扰的 Windows 专注节奏工具。它用正向累计展示已经完成的专注或休息时间，不使用制造压力的倒计时。代码、可执行文件和配置目录继续使用兼容名称 `FocusPace`。
 
 <p align="center">
-  <img src="screenshots/focus%20pace.png" width="460" alt="Focus Pace main window" />
+  <img src="screenshot.png" width="460" alt="Focus Pace main window" />
 </p>
 
 ## 功能特点
