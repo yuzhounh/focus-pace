@@ -22,18 +22,10 @@ public sealed class TrayIconService : IDisposable
     private readonly ContextMenu _menu;
     private readonly MenuItem _statusItem;
     private readonly MenuItem _pauseItem;
-    private readonly MenuItem _restartItem;
     private readonly MenuItem _extendFocusItem;
     private readonly MenuItem _focusItem;
     private readonly MenuItem _restItem;
     private readonly MenuItem _widgetItem;
-    private readonly MenuItem _startupItem;
-    private readonly MenuItem _alwaysOnTopItem;
-    private readonly MenuItem _voiceAnnouncementsItem;
-    private readonly IReadOnlyDictionary<WidgetStyleKind, MenuItem> _widgetStyleItems;
-    private readonly IReadOnlyDictionary<WidgetMotionKind, MenuItem> _widgetMotionItems;
-    private readonly IReadOnlyDictionary<WidgetOpacityKind, MenuItem> _widgetOpacityItems;
-    private readonly IReadOnlyDictionary<ColorThemeKind, MenuItem> _colorThemeItems;
     private Icon _icon;
 
     public TrayIconService(AppViewModel viewModel)
@@ -42,62 +34,10 @@ public sealed class TrayIconService : IDisposable
         _icon = CreateProgressIcon();
         _statusItem = CreateMenuItem(string.Empty, null, false);
         _pauseItem = CreateMenuItem(string.Empty, () => _viewModel.PauseResumeCommand.Execute(null));
-        _restartItem = CreateMenuItem("Restart session", () => _viewModel.RestartCommand.Execute(null));
         _extendFocusItem = CreateMenuItem("Extend by 5 minutes", () => _viewModel.ExtendFocusCommand.Execute(null));
         _focusItem = CreateMenuItem("Start Focus", () => _viewModel.StartFocusCommand.Execute(null));
         _restItem = CreateMenuItem("Start Rest", () => _viewModel.StartRestCommand.Execute(null));
         _widgetItem = CreateMenuItem(string.Empty, () => _viewModel.ToggleWidgetCommand.Execute(null));
-        _startupItem = CreateMenuItem("Start with Windows", () => _viewModel.StartWithWindows = !_viewModel.StartWithWindows);
-        _startupItem.IsCheckable = true;
-        _alwaysOnTopItem = CreateMenuItem("Always on top", () => _viewModel.WidgetAlwaysOnTop = !_viewModel.WidgetAlwaysOnTop);
-        _alwaysOnTopItem.IsCheckable = true;
-        _voiceAnnouncementsItem = CreateMenuItem("Voice announcements", () =>
-            _viewModel.VoiceAnnouncementsEnabled = !_viewModel.VoiceAnnouncementsEnabled);
-        _voiceAnnouncementsItem.IsCheckable = true;
-        _widgetStyleItems = Enum.GetValues<WidgetStyleKind>().ToDictionary(
-            style => style,
-            style => CreateCheckMenuItem(style.ToString(), () => _viewModel.SelectedWidgetStyle = style));
-        _widgetMotionItems = Enum.GetValues<WidgetMotionKind>().ToDictionary(
-            motion => motion,
-            motion => CreateCheckMenuItem(motion.ToString(), () => _viewModel.SelectedWidgetMotion = motion));
-        WidgetOpacityKind[] opacityPresets =
-        [
-            WidgetOpacityKind.Opacity100,
-            WidgetOpacityKind.Opacity90,
-            WidgetOpacityKind.Opacity80,
-            WidgetOpacityKind.Opacity70,
-            WidgetOpacityKind.Opacity60
-        ];
-        _widgetOpacityItems = opacityPresets.ToDictionary(
-            opacity => opacity,
-            opacity => CreateCheckMenuItem(OpacityLabel(opacity), () => _viewModel.SelectedWidgetOpacity = opacity));
-        _colorThemeItems = Enum.GetValues<ColorThemeKind>().ToDictionary(
-            colorTheme => colorTheme,
-            colorTheme => CreateCheckMenuItem(colorTheme.ToString(), () => _viewModel.SelectedColorTheme = colorTheme));
-
-        var widgetStyleMenu = CreateMenuItem("Widget style", null);
-        foreach (var item in _widgetStyleItems.Values)
-        {
-            widgetStyleMenu.Items.Add(item);
-        }
-
-        var widgetMotionMenu = CreateMenuItem("Widget motion", null);
-        foreach (var item in _widgetMotionItems.OrderByDescending(pair => pair.Key).Select(pair => pair.Value))
-        {
-            widgetMotionMenu.Items.Add(item);
-        }
-
-        var widgetOpacityMenu = CreateMenuItem("Widget opacity", null);
-        foreach (var item in _widgetOpacityItems.Values)
-        {
-            widgetOpacityMenu.Items.Add(item);
-        }
-
-        var colorMenu = CreateMenuItem("Color", null);
-        foreach (var item in _colorThemeItems.Values)
-        {
-            colorMenu.Items.Add(item);
-        }
 
         _menu = new ContextMenu
         {
@@ -114,21 +54,13 @@ public sealed class TrayIconService : IDisposable
         _menu.Items.Add(_statusItem);
         _menu.Items.Add(CreateMenuItem("Open Focus Pace", () => _viewModel.ShowSettingsCommand.Execute(null)));
         _menu.Items.Add(new Separator());
-        _menu.Items.Add(_startupItem);
-        _menu.Items.Add(_alwaysOnTopItem);
-        _menu.Items.Add(_voiceAnnouncementsItem);
-        _menu.Items.Add(widgetStyleMenu);
-        _menu.Items.Add(widgetMotionMenu);
-        _menu.Items.Add(widgetOpacityMenu);
-        _menu.Items.Add(colorMenu);
-        _menu.Items.Add(new Separator());
         _menu.Items.Add(_pauseItem);
-        _menu.Items.Add(_restartItem);
-        _menu.Items.Add(_extendFocusItem);
         _menu.Items.Add(_focusItem);
         _menu.Items.Add(_restItem);
+        _menu.Items.Add(_extendFocusItem);
         _menu.Items.Add(new Separator());
         _menu.Items.Add(_widgetItem);
+        _menu.Items.Add(CreateMenuItem("Settings…", () => _viewModel.OpenSettingsCommand.Execute(null)));
         _menu.Items.Add(new Separator());
         _menu.Items.Add(CreateMenuItem("Exit", () => _viewModel.ExitCommand.Execute(null)));
         _menu.Opened += MenuOnOpened;
@@ -220,33 +152,10 @@ public sealed class TrayIconService : IDisposable
         _statusItem.Header = _viewModel.IsReady ? "Ready · Focus" : $"{_viewModel.PhaseLabel} · {_viewModel.TimeText}";
         _pauseItem.Header = _viewModel.PauseResumeText;
         _pauseItem.IsEnabled = _viewModel.HasActiveSession;
-        _restartItem.IsEnabled = _viewModel.HasActiveSession;
         _extendFocusItem.IsEnabled = _viewModel.ExtendFocusCommand.CanExecute(null);
-        _focusItem.IsEnabled = _viewModel.StartFocusCommand.CanExecute(null);
-        _restItem.IsEnabled = _viewModel.CanStartRest;
+        _focusItem.Visibility = _viewModel.CanStartFocus ? Visibility.Visible : Visibility.Collapsed;
+        _restItem.Visibility = _viewModel.CanStartRest ? Visibility.Visible : Visibility.Collapsed;
         _widgetItem.Header = _viewModel.WidgetVisibilityActionText;
-        _startupItem.IsChecked = _viewModel.StartWithWindows;
-        _alwaysOnTopItem.IsChecked = _viewModel.WidgetAlwaysOnTop;
-        _voiceAnnouncementsItem.IsChecked = _viewModel.VoiceAnnouncementsEnabled;
-        foreach (var pair in _widgetStyleItems)
-        {
-            pair.Value.IsChecked = pair.Key == _viewModel.SelectedWidgetStyle;
-        }
-
-        foreach (var pair in _widgetMotionItems)
-        {
-            pair.Value.IsChecked = pair.Key == _viewModel.SelectedWidgetMotion;
-        }
-
-        foreach (var pair in _widgetOpacityItems)
-        {
-            pair.Value.IsChecked = pair.Key == _viewModel.SelectedWidgetOpacity;
-        }
-
-        foreach (var pair in _colorThemeItems)
-        {
-            pair.Value.IsChecked = pair.Key == _viewModel.SelectedColorTheme;
-        }
     }
 
     private Icon CreateProgressIcon()
@@ -330,16 +239,6 @@ public sealed class TrayIconService : IDisposable
             (byte)Math.Round(from.G + (to.G - from.G) * fraction),
             (byte)Math.Round(from.B + (to.B - from.B) * fraction));
 
-    private static string OpacityLabel(WidgetOpacityKind opacity) => opacity switch
-    {
-        WidgetOpacityKind.Opacity100 => "100%",
-        WidgetOpacityKind.Opacity90 => "90%",
-        WidgetOpacityKind.Opacity80 => "80%",
-        WidgetOpacityKind.Opacity70 => "70%",
-        WidgetOpacityKind.Opacity60 => "60%",
-        _ => "90%"
-    };
-
     private static MenuItem CreateMenuItem(string header, Action? action, bool enabled = true)
     {
         var item = new MenuItem { Header = header, IsEnabled = enabled };
@@ -348,13 +247,6 @@ public sealed class TrayIconService : IDisposable
             item.Click += (_, _) => action();
         }
 
-        return item;
-    }
-
-    private static MenuItem CreateCheckMenuItem(string header, Action action)
-    {
-        var item = CreateMenuItem(header, action);
-        item.IsCheckable = true;
         return item;
     }
 

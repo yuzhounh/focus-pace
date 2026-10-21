@@ -26,57 +26,6 @@
             </ContextMenu.Resources>
             <MenuItem Header="Open Focus Pace" Command="{Binding ShowSettingsCommand}" />
             <Separator />
-            <MenuItem Header="Start with Windows" IsCheckable="True"
-                      IsChecked="{Binding StartWithWindows, Mode=TwoWay}" />
-            <MenuItem Header="Always on top" IsCheckable="True"
-                      IsChecked="{Binding WidgetAlwaysOnTop, Mode=TwoWay}" />
-            <MenuItem Header="Voice announcements" IsCheckable="True"
-                      IsChecked="{Binding VoiceAnnouncementsEnabled, Mode=TwoWay}" />
-            <MenuItem Header="Widget style">
-                <MenuItem Header="Bar" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsBarWidget, Mode=OneWay}"
-                          Command="{Binding SelectWidgetStyleCommand}" CommandParameter="{x:Static models:WidgetStyleKind.Bar}" />
-                <MenuItem Header="Ring" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsRingWidget, Mode=OneWay}"
-                          Command="{Binding SelectWidgetStyleCommand}" CommandParameter="{x:Static models:WidgetStyleKind.Ring}" />
-                <MenuItem Header="Fluid" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsFluidWidget, Mode=OneWay}"
-                          Command="{Binding SelectWidgetStyleCommand}" CommandParameter="{x:Static models:WidgetStyleKind.Fluid}" />
-            </MenuItem>
-            <MenuItem Header="Widget motion">
-                <MenuItem Header="Dynamic" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True"
-                          IsChecked="{Binding IsWidgetAnimated, Mode=OneWay}"
-                          Command="{Binding SelectWidgetMotionCommand}" CommandParameter="{x:Static models:WidgetMotionKind.Dynamic}" />
-                <MenuItem Header="Static" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True"
-                          IsChecked="{Binding IsStaticWidget, Mode=OneWay}"
-                          Command="{Binding SelectWidgetMotionCommand}" CommandParameter="{x:Static models:WidgetMotionKind.Static}" />
-            </MenuItem>
-            <MenuItem Header="Widget opacity">
-                <MenuItem Header="100%" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsWidgetOpacity100, Mode=OneWay}"
-                          Command="{Binding SelectWidgetOpacityCommand}" CommandParameter="{x:Static models:WidgetOpacityKind.Opacity100}" />
-                <MenuItem Header="90%" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsWidgetOpacity90, Mode=OneWay}"
-                          Command="{Binding SelectWidgetOpacityCommand}" CommandParameter="{x:Static models:WidgetOpacityKind.Opacity90}" />
-                <MenuItem Header="80%" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsWidgetOpacity80, Mode=OneWay}"
-                          Command="{Binding SelectWidgetOpacityCommand}" CommandParameter="{x:Static models:WidgetOpacityKind.Opacity80}" />
-                <MenuItem Header="70%" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsWidgetOpacity70, Mode=OneWay}"
-                          Command="{Binding SelectWidgetOpacityCommand}" CommandParameter="{x:Static models:WidgetOpacityKind.Opacity70}" />
-                <MenuItem Header="60%" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsWidgetOpacity60, Mode=OneWay}"
-                          Command="{Binding SelectWidgetOpacityCommand}" CommandParameter="{x:Static models:WidgetOpacityKind.Opacity60}" />
-            </MenuItem>
-            <MenuItem Header="Color">
-                <MenuItem Header="Brand" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsBrandTheme, Mode=OneWay}"
-                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Brand}" />
-                <MenuItem Header="Ocean" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsOceanTheme, Mode=OneWay}"
-                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Ocean}" />
-                <MenuItem Header="Violet" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsVioletTheme, Mode=OneWay}"
-                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Violet}" />
-                <MenuItem Header="Mint" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsMintTheme, Mode=OneWay}"
-                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Mint}" />
-                <MenuItem Header="Amber" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsAmberTheme, Mode=OneWay}"
-                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Amber}" />
-                <MenuItem Header="Rose" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsRoseTheme, Mode=OneWay}"
-                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Rose}" />
-                <MenuItem Header="Silver" Style="{StaticResource CompactSubmenuItemStyle}" IsCheckable="True" IsChecked="{Binding IsSilverTheme, Mode=OneWay}"
-                          Command="{Binding SelectColorThemeCommand}" CommandParameter="{x:Static models:ColorThemeKind.Silver}" />
-            </MenuItem>
-            <Separator />
             <MenuItem Header="{Binding PauseResumeText}" Command="{Binding PauseResumeCommand}" />
             <MenuItem Header="Restart session" Command="{Binding RestartCommand}" />
             <MenuItem Header="Extend by 5 minutes" Command="{Binding ExtendFocusCommand}" />
@@ -84,6 +33,7 @@
             <MenuItem Header="Start Rest" Command="{Binding StartRestCommand}" />
             <Separator />
             <MenuItem Header="Hide widget" Command="{Binding HideWidgetCommand}" />
+            <MenuItem Header="Settings…" Command="{Binding OpenSettingsCommand}" />
             <Separator />
             <MenuItem Header="Exit" Command="{Binding ExitCommand}" />
         </ContextMenu>

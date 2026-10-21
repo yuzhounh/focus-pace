@@ -55,6 +55,11 @@ public partial class App : System.Windows.Application
         engine.TryRestore(settings.Session);
         _viewModel = new AppViewModel(engine, settings, store, new StartupService());
         _viewModel.ShowSettingsRequested += (_, _) => ShowSettings();
+        _viewModel.OpenSettingsRequested += (_, _) =>
+        {
+            ShowSettings();
+            _mainWindow?.OpenSettingsPage();
+        };
         _viewModel.ShowWidgetRequested += (_, _) => ShowWidget();
         _viewModel.HideWidgetRequested += (_, _) => HideWidget();
         _viewModel.ToggleWidgetRequested += (_, _) => ToggleWidget();
