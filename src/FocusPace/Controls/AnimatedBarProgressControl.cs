@@ -36,6 +36,7 @@ public sealed class AnimatedBarProgressControl : FrameworkElement
             InvalidateVisual();
         };
         Loaded += (_, _) => UpdateAnimationState();
+        IsVisibleChanged += (_, _) => UpdateAnimationState();
         Unloaded += (_, _) => _animationTimer.Stop();
     }
 
@@ -100,7 +101,7 @@ public sealed class AnimatedBarProgressControl : FrameworkElement
 
     private void UpdateAnimationState()
     {
-        if (IsLoaded && IsAnimated && SystemParameters.ClientAreaAnimation)
+        if (IsLoaded && IsVisible && IsAnimated && SystemParameters.ClientAreaAnimation)
         {
             _animationTimer.Start();
         }

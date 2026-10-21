@@ -45,7 +45,7 @@ public static class ThemeService
     {
         var dark = IsDarkMode();
         var palette = Palettes[colorTheme];
-        resources["WindowBackgroundBrush"] = Brush(dark ? palette.DarkWindow : palette.LightWindow);
+        resources["WindowBackgroundBrush"] = dark ? Brush(palette.DarkWindow) : WindowGradient();
         resources["SurfaceBrush"] = Brush(dark ? "#F21B222D" : "#F2FFFFFF");
         resources["WidgetSurfaceBrush"] = Brush(dark ? palette.DarkWidget : palette.LightWidget);
         resources["ElevatedSurfaceBrush"] = Brush(dark ? "#FF222A36" : "#FFFFFFFF");
@@ -103,6 +103,20 @@ public static class ThemeService
         var brush = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(color));
         brush.Freeze();
         return brush;
+    }
+
+    private static LinearGradientBrush WindowGradient()
+    {
+        var gradient = new LinearGradientBrush
+        {
+            StartPoint = new System.Windows.Point(0, 0),
+            EndPoint = new System.Windows.Point(0, 1)
+        };
+        gradient.GradientStops.Add(new GradientStop(ParseColor("#EFF4FC"), 0));
+        gradient.GradientStops.Add(new GradientStop(ParseColor("#F7F0F4"), 0.52));
+        gradient.GradientStops.Add(new GradientStop(ParseColor("#F7F5E9"), 1));
+        gradient.Freeze();
+        return gradient;
     }
 
     private static LinearGradientBrush BrandGradient(double brightness = 1)

@@ -45,6 +45,7 @@ public sealed class CircularProgressControl : FrameworkElement
             InvalidateVisual();
         };
         Loaded += (_, _) => UpdateAnimationState();
+        IsVisibleChanged += (_, _) => UpdateAnimationState();
         Unloaded += (_, _) => _animationTimer.Stop();
     }
 
@@ -148,7 +149,7 @@ public sealed class CircularProgressControl : FrameworkElement
 
     private void UpdateAnimationState()
     {
-        if (IsLoaded && IsAnimated && SystemParameters.ClientAreaAnimation)
+        if (IsLoaded && IsVisible && IsAnimated && SystemParameters.ClientAreaAnimation)
         {
             _animationTimer.Start();
         }

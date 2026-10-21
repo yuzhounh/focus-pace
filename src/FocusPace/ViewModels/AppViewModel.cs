@@ -53,6 +53,7 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
         _extendFocusCommand = new RelayCommand(_ => ExtendFocus(), _ => Phase == SessionPhase.Focus);
         ExtendFocusCommand = _extendFocusCommand;
         ShowSettingsCommand = new RelayCommand(_ => ShowSettingsRequested?.Invoke(this, EventArgs.Empty));
+        OpenSettingsCommand = new RelayCommand(_ => OpenSettingsRequested?.Invoke(this, EventArgs.Empty));
         SelectWidgetStyleCommand = new RelayCommand(parameter =>
         {
             if (parameter is WidgetStyleKind style)
@@ -104,6 +105,7 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
 
     public event PropertyChangedEventHandler? PropertyChanged;
     public event EventHandler? ShowSettingsRequested;
+    public event EventHandler? OpenSettingsRequested;
     public event EventHandler? ShowWidgetRequested;
     public event EventHandler? HideWidgetRequested;
     public event EventHandler? ToggleWidgetRequested;
@@ -119,6 +121,7 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
     public ICommand RestartCommand { get; }
     public ICommand ExtendFocusCommand { get; }
     public ICommand ShowSettingsCommand { get; }
+    public ICommand OpenSettingsCommand { get; }
     public ICommand SelectWidgetStyleCommand { get; }
     public ICommand SelectColorThemeCommand { get; }
     public ICommand SelectWidgetMotionCommand { get; }
