@@ -25,6 +25,9 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
     private readonly RelayCommand _startRestCommand;
     private readonly RelayCommand _extendFocusCommand;
     private int _lastDisplayedSecond = -1;
+    private const double FluidPhaseCoverage = 0.58;
+    private const double FluidTimeCoverage = 0.40;
+    private (string Fill, bool PhaseCovered, bool TimeCovered) _lastProgressStyle;
     private uint _readyInputBaseline;
 
     public AppViewModel(
@@ -210,20 +213,21 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
     public double Progress => IsReady || _engine.Target <= TimeSpan.Zero
         ? 0
         : Math.Clamp(_engine.Elapsed.TotalMilliseconds / _engine.Target.TotalMilliseconds, 0, 1);
-    public MediaBrush ProgressFillBrush => IsPaused
-        ? ResourceBrush("ProgressPausedBrush")
+    public MediaBrush ProgressFillBrush => ResourceBrush(ProgressFillResourceKey);
+    private string ProgressFillResourceKey => IsPaused
+        ? "ProgressPausedBrush"
         : IsGoalReached
-            ? ResourceBrush("ProgressCompleteBrush")
+            ? "ProgressCompleteBrush"
             : Phase == SessionPhase.Rest
-                ? ResourceBrush("ProgressRestBrush")
+                ? "ProgressRestBrush"
                 : Progress switch
                 {
-                    < 0.3 => ResourceBrush("ProgressEarlyBrush"),
-                    < 0.7 => ResourceBrush("ProgressMidBrush"),
-                    _ => ResourceBrush("ProgressLateBrush")
+                    < 0.3 => "ProgressEarlyBrush",
+                    < 0.7 => "ProgressMidBrush",
+                    _ => "ProgressLateBrush"
                 };
-    public MediaBrush FluidPhaseTextBrush => AdaptiveFluidTextBrush(0.58);
-    public MediaBrush FluidTimeTextBrush => AdaptiveFluidTextBrush(0.40);
+    public MediaBrush FluidPhaseTextBrush => AdaptiveFluidTextBrush(FluidPhaseCoverage);
+    public MediaBrush FluidTimeTextBrush => AdaptiveFluidTextBrush(FluidTimeCoverage);
     public MediaBrush ProgressTextBrush => AdaptiveTextBrush(ProgressFillBrush);
 
     public WidgetStyleKind SelectedWidgetStyle
@@ -570,7 +574,7 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
         if (second != _lastDisplayedSecond)
         {
             _lastDisplayedSecond = second;
-            RefreshAll();
+            RefreshElapsed();
         }
     }
 
@@ -618,8 +622,30 @@ public sealed class AppViewModel : INotifyPropertyChanged, IDisposable
         }
     }
 
+    private (string Fill, bool PhaseCovered, bool TimeCovered) ProgressStyle() =>
+        (ProgressFillResourceKey, Progress >= FluidPhaseCoverage, Progress >= FluidTimeCoverage);
+
+    private void RefreshElapsed()
+    {
+        OnPropertyChanged(nameof(TimeText));
+        OnPropertyChanged(nameof(Remaining));
+        OnPropertyChanged(nameof(WidgetText));
+        OnPropertyChanged(nameof(WidgetTooltip));
+        OnPropertyChanged(nameof(DetailText));
+        OnPropertyChanged(nameof(Progress));
+        var style = ProgressStyle();
+        if (style == _lastProgressStyle) return;
+        _lastProgressStyle = style;
+        OnPropertyChanged(nameof(ProgressFillBrush));
+        OnPropertyChanged(nameof(ProgressTextBrush));
+        OnPropertyChanged(nameof(FluidPhaseTextBrush));
+        OnPropertyChanged(nameof(FluidTimeTextBrush));
+    }
+
     private void RefreshAll()
     {
+        _lastDisplayedSecond = (int)_engine.Elapsed.TotalSeconds;
+        _lastProgressStyle = ProgressStyle();
         OnPropertyChanged(nameof(Phase));
         OnPropertyChanged(nameof(IsPaused));
         OnPropertyChanged(nameof(IsReady));
